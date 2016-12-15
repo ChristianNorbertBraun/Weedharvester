@@ -1,9 +1,7 @@
 package weedharvester
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -25,12 +23,7 @@ func (m *master) Assign() assignment {
 	}
 
 	assign := assignment{}
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		panic(err)
-	}
-	json.Unmarshal(body, &assign)
+	decodeJSON(response.Body, &assign)
 
 	return assign
 }
