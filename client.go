@@ -27,6 +27,22 @@ func NewClient(url string) Client {
 	return Client{master: master{url: url}}
 }
 
+// Read reads file with a given fileId
+func (c *Client) Read(fileID string) io.Reader {
+	location := c.master.Find(fileID)
+	resp, err := http.Get(location.PublicURL + "/" + fileID)
+
+	if err != nil {
+		panic(err)
+	}
+
+	if resp.StatusCode >= 300 {
+		panic(fmt.Sprintln("Bad status code t reading"))
+	}
+
+	return resp.Body
+}
+
 // Create creates a file for the given content within the SeaweedFS
 func (c *Client) Create(content io.Reader) (string, error) {
 	var b bytes.Buffer
@@ -39,12 +55,6 @@ func (c *Client) Create(content io.Reader) (string, error) {
 	}
 
 	return sendMultipartFormData(writer, &b, assign)
-}
-
-// Read reads file with a given fileId
-func (c *Client) Read(fileID string) *io.Reader {
-
-	return nil
 }
 
 // Delete deletes the file with the given fileId
