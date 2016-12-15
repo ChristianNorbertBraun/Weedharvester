@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
@@ -30,41 +29,16 @@ func NewClient(url string) Client {
 
 // Create creates a file for the given content within the SeaweedFS
 func (c *Client) Create(content io.Reader) (string, error) {
-	assign := c.master.Assign()
 	var b bytes.Buffer
-	writer := multipart.NewWriter(&b)
+	assign := c.master.Assign()
 
-	part, err := createFormFile(writer, "file", "")
-
-	if err != nil {
-		return "", err
-	}
-
-	_, err = io.Copy(part, content)
-	if err != nil {
-		return "", err
-	}
-
-	writer.Close()
-	resp, err := http.Post(
-		fmt.Sprintf("%s/%s", assign.PublicURL, assign.Fid),
-		writer.FormDataContentType(),
-		&b)
+	writer, err := createMultipartForm(&content, &b, assign)
 
 	if err != nil {
-		fmt.Println("Unable to send content!")
-		return "", err
+		panic(err)
 	}
 
-	if resp.StatusCode >= 300 {
-		err = fmt.Errorf("bad status: %s", resp.Status)
-		return "", err
-	}
-
-	data, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(data))
-
-	return assign.Fid, nil
+	return sendMultipartFormData(writer, &b, assign)
 }
 
 // Read reads file with a given fileId
@@ -79,6 +53,45 @@ func (c *Client) Delete() {
 }
 
 var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
+
+func createMultipartForm(content *io.Reader, b *bytes.Buffer, assign assignment) (*multipart.Writer, error) {
+	writer := multipart.NewWriter(b)
+
+	part, err := createFormFile(writer, "file", "")
+
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = io.Copy(part, *content)
+	if err != nil {
+		return nil, err
+	}
+
+	writer.Close()
+
+	return writer, nil
+
+}
+
+func sendMultipartFormData(writer *multipart.Writer, b *bytes.Buffer, assign assignment) (string, error) {
+	resp, err := http.Post(
+		fmt.Sprintf("%s/%s", assign.PublicURL, assign.Fid),
+		writer.FormDataContentType(),
+		b)
+
+	if err != nil {
+		fmt.Println("Unable to send content!")
+		return "", err
+	}
+
+	if resp.StatusCode >= 300 {
+		err = fmt.Errorf("bad status: %s", resp.Status)
+		return "", err
+	}
+
+	return assign.Fid, nil
+}
 
 func escapeQuotes(s string) string {
 	return quoteEscaper.Replace(s)
