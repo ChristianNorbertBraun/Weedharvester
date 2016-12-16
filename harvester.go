@@ -23,15 +23,9 @@ func NewFiler(url string) Filer {
 
 var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
 
-func createMultipartForm(content *io.Reader, b *bytes.Buffer, fieldname string) (*multipart.Writer, error) {
+func createMultipartForm(content *io.Reader, b *bytes.Buffer) (*multipart.Writer, error) {
 	writer := multipart.NewWriter(b)
-	var part io.Writer
-	var err error
-	if len(fieldname) == 0 {
-		part, err = createFormFile(writer, "file", "")
-	} else {
-		part, err = createFormFile(writer, fieldname, "")
-	}
+	part, err := createFormFile(writer, "file", "")
 	if err != nil {
 		return nil, err
 	}

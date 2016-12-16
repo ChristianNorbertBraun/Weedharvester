@@ -28,7 +28,7 @@ func (c *Client) Read(fileID string) io.Reader {
 	}
 
 	if resp.StatusCode >= 300 {
-		panic(fmt.Sprintln("Bad status code t reading"))
+		panic(fmt.Sprintln("Bad status code reading"))
 	}
 
 	return resp.Body
@@ -39,7 +39,7 @@ func (c *Client) Create(content io.Reader) (string, error) {
 	var b bytes.Buffer
 	assign := c.master.Assign()
 
-	writer, err := createMultipartForm(&content, &b, "")
+	writer, err := createMultipartForm(&content, &b)
 
 	if err != nil {
 		panic(err)
