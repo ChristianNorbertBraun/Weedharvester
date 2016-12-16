@@ -4,5 +4,4 @@ go:
  - 1.7.x
  - master
 
- script: true
- 
+ script: go build
