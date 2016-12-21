@@ -4,11 +4,14 @@ import (
 	"bytes"
 	"io/ioutil"
 	"testing"
+	"time"
 )
 
 func TestCreateFiler(t *testing.T) {
 	filer := NewFiler("http://docker:8888")
-	err := createFile("test", "test/path", "only a test", &filer)
+	now := time.Now().UTC()
+	timeAsString := now.Format(time.StampNano)
+	err := createFile(timeAsString, "test/path", "only a test", &filer)
 	if err != nil {
 		t.Errorf("Error: %s", err)
 	}
