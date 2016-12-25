@@ -48,7 +48,10 @@ func TestReadDirectory(t *testing.T) {
 	}
 
 	directory := filer.ReadDirectory("test", "")
-	fmt.Println(directory)
+
+	if directory.Directory != "test" {
+		t.Errorf("Error: Retruned directory is not named test")
+	}
 }
 
 func createFile(filename string, filepath string, content string, filer *Filer) error {
