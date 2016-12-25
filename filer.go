@@ -83,9 +83,6 @@ func (f *Filer) ReadDirectory(path string, lastFileName string) Directory {
 	}
 
 	directory := Directory{}
-	// data, err := ioutil.ReadAll(resp.Body)
-	// fmt.Println(string(data))
-	fmt.Println(url)
 	err = decodeJSON(resp.Body, &directory)
 
 	if err != nil {
