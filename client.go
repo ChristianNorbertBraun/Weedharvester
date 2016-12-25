@@ -7,12 +7,6 @@ import (
 	"net/http"
 )
 
-// Report represents all data for
-type Report struct {
-	FileID  string
-	Success bool
-}
-
 // Client represents a SeaweedFS client
 type Client struct {
 	master master

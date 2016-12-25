@@ -2,6 +2,7 @@ package weedharvester
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"testing"
 	"time"
@@ -10,7 +11,7 @@ import (
 func TestCreateFiler(t *testing.T) {
 	filer := NewFiler("http://docker:8888")
 	now := time.Now().UTC()
-	timeAsString := now.Format(time.StampNano)
+	timeAsString := now.Format(time.RFC3339Nano)
 	err := createFile(timeAsString, "test/path", "only a test", &filer)
 	if err != nil {
 		t.Errorf("Error: %s", err)
@@ -35,6 +36,19 @@ func TestReadFiler(t *testing.T) {
 		t.Errorf("Expected %s but got %s", content, string(data))
 	}
 
+}
+
+func TestReadDirectory(t *testing.T) {
+	filer := NewFiler("http://docker:8888")
+	content := "Only a test"
+	err := createFile("test", "test/path", content, &filer)
+
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
+
+	directory := filer.ReadDirectory("test", "")
+	fmt.Println(directory)
 }
 
 func createFile(filename string, filepath string, content string, filer *Filer) error {

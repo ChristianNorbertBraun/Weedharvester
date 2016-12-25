@@ -12,6 +12,23 @@ type Filer struct {
 	url string
 }
 
+// Directory represents a directory mapped from the seaweed filer
+type Directory struct {
+	Directory      string         `json:"Directory"`
+	Files          []file         `json:"Files"`
+	Subdirectories []subdirectory `json:"Subdirectories"`
+}
+
+type subdirectory struct {
+	Name string `json:"Name"`
+	ID   int    `json:"Id"`
+}
+
+type file struct {
+	Name string `json:"name"`
+	Fid  string `json:"fid"`
+}
+
 // Create creates a new file with the given content name and under the given path
 func (f *Filer) Create(content io.Reader, filename string, path string) error {
 	var b bytes.Buffer
@@ -49,4 +66,30 @@ func (f *Filer) Read(filename string, path string) io.Reader {
 	}
 
 	return resp.Body
+}
+
+// ReadDirectory returns all files contained in a given directory
+func (f *Filer) ReadDirectory(path string, lastFileName string) Directory {
+	var url string
+	if len(lastFileName) != 0 {
+		url = fmt.Sprintf("%s/%s/?lastFileName=%s", f.url, path, lastFileName)
+	} else {
+		url = fmt.Sprintf("%s/%s/", f.url, path)
+	}
+	resp, err := http.Get(url)
+
+	if err != nil {
+		panic(err)
+	}
+
+	directory := Directory{}
+	// data, err := ioutil.ReadAll(resp.Body)
+	// fmt.Println(string(data))
+	fmt.Println(url)
+	err = decodeJSON(resp.Body, &directory)
+
+	if err != nil {
+		panic(err)
+	}
+	return directory
 }
