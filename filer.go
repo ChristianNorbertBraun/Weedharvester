@@ -76,7 +76,10 @@ func (f *Filer) ReadDirectory(path string, lastFileName string) Directory {
 	} else {
 		url = fmt.Sprintf("%s/%s/", f.url, path)
 	}
-	resp, err := http.Get(url)
+	client := http.Client{}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Add("accept", "application/json")
+	resp, err := client.Do(req)
 
 	if err != nil {
 		panic(err)
