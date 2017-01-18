@@ -2,7 +2,6 @@ package weedharvester
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"testing"
 	"time"
