@@ -46,10 +46,10 @@ func TestReadDirectory(t *testing.T) {
 		t.Errorf("Error: %s", err)
 	}
 
-	directory := filer.ReadDirectory("test", "")
+	directory := filer.ReadDirectory("test/path", "")
 
-	if directory.Directory != "test" {
-		t.Errorf("Error: Retruned directory is not named test")
+	if directory.Directory != "/test/path/" {
+		t.Errorf("Error: Retruned directory is not named test but %s", directory.Directory)
 	}
 }
 
