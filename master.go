@@ -27,7 +27,12 @@ type location struct {
 
 func (m *master) Assign() (*assignment, error) {
 	completeURL := addSlashIfNeeded(m.url) + "dir/assign"
-	resp, err := http.Get(completeURL)
+
+	client := http.Client{}
+	request, _ := http.NewRequest("GET", completeURL, nil)
+	request.Header.Add("accept", "application/json")
+	resp, err := client.Do(request)
+
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +48,11 @@ func (m *master) Assign() (*assignment, error) {
 
 func (m *master) Find(fileID string) (*location, error) {
 	completeURL := addSlashIfNeeded(m.url) + "dir/lookup?volumeId=" + fileID
-	resp, err := http.Get(completeURL)
+
+	client := http.Client{}
+	request, _ := http.NewRequest("GET", completeURL, nil)
+	request.Header.Add("accept", "application/json")
+	resp, err := client.Do(request)
 	if err != nil {
 		return nil, err
 	}
