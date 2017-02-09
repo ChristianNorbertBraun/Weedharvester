@@ -7,6 +7,8 @@ First Start SeaweedFS. You will need to make an entry in your `/etc/hosts` with
 docker and the ip adress of your docker container.
 
 This lib was tested for SeaweedFS version 0.70 linux
+There is no option to set replication within the lib but you can 
+always set the default replication of seaweedFS.
 
 To start SeaweedFS use 
 
