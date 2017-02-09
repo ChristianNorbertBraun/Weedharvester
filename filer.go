@@ -40,9 +40,9 @@ func (f *Filer) Create(content io.Reader, filename string, path string) error {
 
 	var url string
 	if len(path) == 0 {
-		url = fmt.Sprintf("%s/%s", f.url, filename)
+		url = fmt.Sprintf("%s%s", addSlashIfNeeded(f.url), filename)
 	} else {
-		url = fmt.Sprintf("%s/%s/%s", f.url, path, filename)
+		url = fmt.Sprintf("%s%s%s", addSlashIfNeeded(f.url), addSlashIfNeeded(path), filename)
 	}
 
 	return sendMultipartFormData(writer, &b, url)
@@ -51,9 +51,9 @@ func (f *Filer) Create(content io.Reader, filename string, path string) error {
 func (f *Filer) Read(filename string, path string) (io.Reader, error) {
 	var url string
 	if len(path) == 0 {
-		url = fmt.Sprintf("%s/%s", f.url, filename)
+		url = fmt.Sprintf("%s%s", addSlashIfNeeded(f.url), filename)
 	} else {
-		url = fmt.Sprintf("%s/%s/%s", f.url, path, filename)
+		url = fmt.Sprintf("%s%s%s", addSlashIfNeeded(f.url), addSlashIfNeeded(path), filename)
 	}
 
 	resp, err := http.Get(url)
@@ -72,9 +72,9 @@ func (f *Filer) Read(filename string, path string) (io.Reader, error) {
 func (f *Filer) ReadDirectory(path string, lastFileName string) (*Directory, error) {
 	var url string
 	if len(lastFileName) != 0 {
-		url = fmt.Sprintf("%s/%s/?lastFileName=%s", f.url, path, lastFileName)
+		url = fmt.Sprintf("%s%s?lastFileName=%s", addSlashIfNeeded(f.url), addSlashIfNeeded(path), lastFileName)
 	} else {
-		url = fmt.Sprintf("%s/%s/", f.url, path)
+		url = fmt.Sprintf("%s%s", addSlashIfNeeded(f.url), addSlashIfNeeded(path))
 	}
 	client := http.Client{}
 	req, _ := http.NewRequest("GET", url, nil)

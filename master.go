@@ -26,7 +26,7 @@ type location struct {
 }
 
 func (m *master) Assign() (*assignment, error) {
-	completeURL := m.url + "/dir/assign"
+	completeURL := addSlashIfNeeded(m.url) + "dir/assign"
 	resp, err := http.Get(completeURL)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (m *master) Assign() (*assignment, error) {
 }
 
 func (m *master) Find(fileID string) (*location, error) {
-	completeURL := m.url + "/dir/lookup?volumeId=" + fileID
+	completeURL := addSlashIfNeeded(m.url) + "dir/lookup?volumeId=" + fileID
 	resp, err := http.Get(completeURL)
 	if err != nil {
 		return nil, err

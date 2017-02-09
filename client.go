@@ -20,7 +20,7 @@ func (c *Client) Read(fileID string) (io.Reader, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.Get(location.PublicURL + "/" + fileID)
+	resp, err := http.Get(addSlashIfNeeded(location.PublicURL) + fileID)
 
 	if err != nil {
 		log.Printf("Error while sending get to %s/%s", location.PublicURL, fileID)
@@ -50,7 +50,7 @@ func (c *Client) Create(content io.Reader) (string, error) {
 		return "", err
 	}
 
-	url := fmt.Sprintf("%s/%s", assign.PublicURL, assign.Fid)
+	url := fmt.Sprintf("%s%s", addSlashIfNeeded(assign.PublicURL), assign.Fid)
 
 	return assign.Fid, sendMultipartFormData(writer, &b, url)
 }

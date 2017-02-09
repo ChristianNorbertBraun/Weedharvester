@@ -46,13 +46,11 @@ func sendMultipartFormData(writer *multipart.Writer, b *bytes.Buffer, url string
 		b)
 
 	if err != nil {
-		fmt.Println("Unable to send content!")
 		return err
 	}
 
 	if resp.StatusCode >= 300 {
-		err = fmt.Errorf("bad status: %s", resp.Status)
-		return err
+		return fmt.Errorf("bad status: %s", resp.Status)
 	}
 
 	return nil
@@ -77,4 +75,14 @@ func createFormFile(writer *multipart.Writer, fieldname, mime string) (io.Writer
 
 func decodeJSON(r io.Reader, v interface{}) error {
 	return json.NewDecoder(r).Decode(v)
+}
+
+func addSlashIfNeeded(url string) string {
+	var buffer bytes.Buffer
+	buffer.WriteString(url)
+	if url[len(url)-1] != '/' {
+		buffer.WriteString("/")
+	}
+
+	return buffer.String()
 }
