@@ -2,6 +2,23 @@
 # Weedharvester
 An client API for SeaweedFS
 
+## Getting Started
+First Start SeaweedFS. You will need to make an entry in your `/etc/hosts` with
+docker and the ip adress of your docker container.
+
+This lib was tested for SeaweedFS version 0.70 linux
+
+To start SeaweedFS use 
+
+```
+make start-seaweed
+```
+
+To check if everything is working correctly run tests with
+```
+go test
+```
+
 ## Client
 
 ```
