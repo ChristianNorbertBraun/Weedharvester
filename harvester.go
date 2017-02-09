@@ -37,7 +37,6 @@ func createMultipartForm(content *io.Reader, b *bytes.Buffer) (*multipart.Writer
 	writer.Close()
 
 	return writer, nil
-
 }
 
 func sendMultipartFormData(writer *multipart.Writer, b *bytes.Buffer, url string) error {

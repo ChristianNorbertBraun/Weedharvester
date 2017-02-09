@@ -25,7 +25,10 @@ func TestReadFiler(t *testing.T) {
 		t.Errorf("Error: %s", err)
 	}
 
-	reader := filer.Read("test", "test/read")
+	reader, err := filer.Read("test", "test/read")
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
 	data, err := ioutil.ReadAll(reader)
 	if err != nil {
 		t.Errorf("Error: %s", err)
@@ -46,7 +49,11 @@ func TestReadDirectory(t *testing.T) {
 		t.Errorf("Error: %s", err)
 	}
 
-	directory := filer.ReadDirectory("test/path", "")
+	directory, err := filer.ReadDirectory("test/path", "")
+
+	if err != nil {
+		t.Errorf("Error: Unable to read directory %s", err)
+	}
 
 	if directory.Directory != "/test/path/" {
 		t.Errorf("Error: Returned directory is not named test but %s", directory.Directory)

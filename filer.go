@@ -48,7 +48,7 @@ func (f *Filer) Create(content io.Reader, filename string, path string) error {
 	return sendMultipartFormData(writer, &b, url)
 }
 
-func (f *Filer) Read(filename string, path string) io.Reader {
+func (f *Filer) Read(filename string, path string) (io.Reader, error) {
 	var url string
 	if len(path) == 0 {
 		url = fmt.Sprintf("%s/%s", f.url, filename)
@@ -58,18 +58,18 @@ func (f *Filer) Read(filename string, path string) io.Reader {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if resp.StatusCode >= 300 {
-		panic(fmt.Sprintln("Bad status code reading"))
+		return nil, fmt.Errorf("Bad StatusCode reading: %s/%s", filename, path)
 	}
 
-	return resp.Body
+	return resp.Body, nil
 }
 
 // ReadDirectory returns all files contained in a given directory
-func (f *Filer) ReadDirectory(path string, lastFileName string) Directory {
+func (f *Filer) ReadDirectory(path string, lastFileName string) (*Directory, error) {
 	var url string
 	if len(lastFileName) != 0 {
 		url = fmt.Sprintf("%s/%s/?lastFileName=%s", f.url, path, lastFileName)
@@ -82,14 +82,14 @@ func (f *Filer) ReadDirectory(path string, lastFileName string) Directory {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	directory := Directory{}
 	err = decodeJSON(resp.Body, &directory)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return directory
+	return &directory, err
 }

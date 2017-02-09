@@ -2,8 +2,10 @@ package weedharvester
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -13,30 +15,39 @@ type Client struct {
 }
 
 // Read reads file with a given fileId
-func (c *Client) Read(fileID string) io.Reader {
-	location := c.master.Find(fileID)
+func (c *Client) Read(fileID string) (io.Reader, error) {
+	location, err := c.master.Find(fileID)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := http.Get(location.PublicURL + "/" + fileID)
 
 	if err != nil {
-		panic(err)
+		log.Printf("Error while sending get to %s/%s", location.PublicURL, fileID)
+		return nil, err
 	}
 
 	if resp.StatusCode >= 300 {
-		panic(fmt.Sprintln("Bad status code reading"))
+		log.Printf("Status %d while reading from %s/%s", resp.StatusCode, location.PublicURL, fileID)
+		return nil, errors.New("Bad StatusCode")
 	}
 
-	return resp.Body
+	return resp.Body, nil
 }
 
 // Create creates a file for the given content within the SeaweedFS
 func (c *Client) Create(content io.Reader) (string, error) {
 	var b bytes.Buffer
-	assign := c.master.Assign()
+	assign, err := c.master.Assign()
+
+	if err != nil {
+		return "", err
+	}
 
 	writer, err := createMultipartForm(&content, &b)
 
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	url := fmt.Sprintf("%s/%s", assign.PublicURL, assign.Fid)

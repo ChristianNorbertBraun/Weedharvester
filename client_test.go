@@ -25,7 +25,10 @@ func TestRead(t *testing.T) {
 		t.Errorf("Error:%s", err)
 	}
 
-	reader := client.Read(fileID)
+	reader, err := client.Read(fileID)
+	if err != nil {
+		t.Errorf("Error: Unable to read file: %s %s", fileID, err)
+	}
 	byteArray, err := ioutil.ReadAll(reader)
 	if err != nil {
 		t.Errorf("Error: %s", err)

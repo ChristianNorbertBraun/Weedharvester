@@ -25,38 +25,38 @@ type location struct {
 	PublicURL string `json:"publicUrl"`
 }
 
-func (m *master) Assign() assignment {
+func (m *master) Assign() (*assignment, error) {
 	completeURL := m.url + "/dir/assign"
 	resp, err := http.Get(completeURL)
 	if err != nil {
-		panic(fmt.Sprintf("Error: Unable to ask for assignment at: %s", completeURL))
+		return nil, err
 	}
 
 	if resp.StatusCode >= 300 {
-		panic(fmt.Sprintln("Received bad statuscode at assignment"))
+		return nil, fmt.Errorf("Bad StatusCode reading: %s", completeURL)
 	}
 	assign := assignment{}
 	err = decodeJSON(resp.Body, &assign)
 
-	return assign
+	return &assign, nil
 }
 
-func (m *master) Find(fileID string) location {
+func (m *master) Find(fileID string) (*location, error) {
 	completeURL := m.url + "/dir/lookup?volumeId=" + fileID
 	resp, err := http.Get(completeURL)
 	if err != nil {
-		panic(fmt.Sprintf("Error: Unable to lookup for volume at: %s", completeURL))
+		return nil, err
 	}
 
 	if resp.StatusCode >= 300 {
-		panic(fmt.Sprintln("Received bad statuscode at lookup"))
+		return nil, fmt.Errorf("Bad StatusCode reading: %s", completeURL)
 	}
 	volume := volume{}
 	err = decodeJSON(resp.Body, &volume)
 
 	if err != nil {
-		panic(fmt.Sprintf("Error: Unable to parse response from %s", completeURL))
+		return nil, err
 	}
 
-	return volume.Locations[0]
+	return &volume.Locations[0], nil
 }
