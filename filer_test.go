@@ -8,7 +8,7 @@ import (
 )
 
 func TestCreateFiler(t *testing.T) {
-	filer := NewFiler("http://docker:8888")
+	filer := NewFiler(*filerURL)
 	now := time.Now().UTC()
 	timeAsString := now.Format(time.RFC3339Nano)
 	err := createFile(timeAsString, "test/path", "only a test", &filer)
@@ -18,7 +18,7 @@ func TestCreateFiler(t *testing.T) {
 }
 
 func TestReadFiler(t *testing.T) {
-	filer := NewFiler("http://docker:8888")
+	filer := NewFiler(*filerURL)
 	content := "Only a test"
 	err := createFile("test", "test/read", content, &filer)
 	if err != nil {
@@ -41,7 +41,7 @@ func TestReadFiler(t *testing.T) {
 }
 
 func TestReadDirectory(t *testing.T) {
-	filer := NewFiler("http://docker:8888")
+	filer := NewFiler(*filerURL)
 	content := "Only a test"
 	err := createFile("test", "test/path", content, &filer)
 

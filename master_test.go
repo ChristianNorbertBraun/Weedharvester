@@ -3,7 +3,7 @@ package weedharvester
 import "testing"
 
 func TestAssign(t *testing.T) {
-	master := master{url: "http://docker:9333"}
+	master := master{url: *masterURL}
 	assignment, err := master.Assign()
 
 	if err != nil {
@@ -16,7 +16,7 @@ func TestAssign(t *testing.T) {
 }
 
 func TestFind(t *testing.T) {
-	master := master{url: "http://docker:9333"}
+	master := master{url: *masterURL}
 	location, err := master.Find("1")
 	if err != nil {
 		t.Errorf("Erro: Unable to find ")

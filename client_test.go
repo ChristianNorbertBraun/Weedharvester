@@ -7,7 +7,7 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	client := NewClient("http://docker:9333")
+	client := NewClient(*masterURL)
 
 	data := bytes.NewReader([]byte("Only a test"))
 	_, err := client.Create(data)
@@ -17,7 +17,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestRead(t *testing.T) {
-	client := NewClient("http://docker:9333")
+	client := NewClient(*masterURL)
 	dataString := "Only a test"
 	data := bytes.NewReader([]byte(dataString))
 	fileID, err := client.Create(data)

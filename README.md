@@ -18,6 +18,12 @@ To check if everything is working correctly run tests with
 ```
 go test
 ```
+If your using a different url for master and filer just hand the base
+url in at testing.
+
+```
+go test --master http://docker:9333 --filer http://docker:8888
+```
 
 ## Client
 
