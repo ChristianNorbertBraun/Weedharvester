@@ -37,7 +37,7 @@ func (f *Filer) Ping() error {
 	if err != nil {
 		return err
 	}
-	if response.StatusCode > 300 {
+	if response.StatusCode >= 500 {
 		return fmt.Errorf("Bad Statuscode %d while trying to ping %s", response.StatusCode, completeURL)
 	}
 
