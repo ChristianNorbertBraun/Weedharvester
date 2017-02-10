@@ -29,6 +29,21 @@ type file struct {
 	Fid  string `json:"fid"`
 }
 
+// Ping checks wether the filer with the given url can be reached or not
+func (f *Filer) Ping() error {
+	completeURL := addSlashIfNeeded(f.url) + "testUrlWeedharvester"
+	response, err := http.Get(completeURL)
+
+	if err != nil {
+		return err
+	}
+	if response.StatusCode > 300 {
+		return fmt.Errorf("Bad Statuscode %d while trying to ping %s", response.StatusCode, completeURL)
+	}
+
+	return nil
+}
+
 // Create creates a new file with the given content name and under the given path
 func (f *Filer) Create(content io.Reader, filename string, path string) error {
 	var b bytes.Buffer
