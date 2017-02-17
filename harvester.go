@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
@@ -13,11 +14,13 @@ import (
 
 // NewClient creates a new client. The given url has to be the address of the master server
 func NewClient(url string) Client {
+	log.Println("Created Client with url: ", url)
 	return Client{master: master{url: url}}
 }
 
 // NewFiler creates a new Filer with the given url as the host address
 func NewFiler(url string) Filer {
+	log.Println("Created Filer with url: ", url)
 	return Filer{url: url}
 }
 
