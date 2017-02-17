@@ -9,7 +9,8 @@ go:
  - master
  
 before_install:
+ - docker kill $(docker ps -aq)
  - make start-seaweed-deamon
  
 script:
-  - go build
+  - go test
