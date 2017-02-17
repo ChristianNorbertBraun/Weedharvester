@@ -14,7 +14,7 @@ type Filer struct {
 
 // Directory represents a directory mapped from the seaweed filer
 type Directory struct {
-	Directory      string         `json:"Directory"`
+	Directory      string         `json:"path"`
 	Files          []file         `json:"Files"`
 	Subdirectories []subdirectory `json:"Subdirectories"`
 }
