@@ -9,4 +9,4 @@ go:
  - master
  
 before_install:
- - make start-seaweed
+ - make start-seaweed-deamon
