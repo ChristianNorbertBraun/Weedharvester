@@ -69,5 +69,11 @@ func (m *master) Find(fileID string) (*location, error) {
 		return nil, err
 	}
 
-	return &volume.Locations[0], nil
+	if len(volume.Locations) != 0 {
+		volume.Locations[0].PublicURL = addProtocolIfNeeded(volume.Locations[0].PublicURL)
+
+		return &volume.Locations[0], nil
+	}
+
+	return nil, fmt.Errorf("Unable to find location of: %s", fileID)
 }
