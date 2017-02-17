@@ -10,3 +10,6 @@ go:
  
 before_install:
  - make start-seaweed-deamon
+ 
+script:
+  - go build
