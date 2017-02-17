@@ -43,6 +43,8 @@ func (m *master) Assign() (*assignment, error) {
 	assign := assignment{}
 	err = decodeJSON(resp.Body, &assign)
 
+	assign.PublicURL = addProtocolIfNeeded(assign.PublicURL)
+
 	return &assign, nil
 }
 

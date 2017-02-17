@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
@@ -14,13 +13,11 @@ import (
 
 // NewClient creates a new client. The given url has to be the address of the master server
 func NewClient(url string) Client {
-	log.Println("Created Client with url: ", url)
 	return Client{master: master{url: url}}
 }
 
 // NewFiler creates a new Filer with the given url as the host address
 func NewFiler(url string) Filer {
-	log.Println("Created Filer with url: ", url)
 	return Filer{url: url}
 }
 
@@ -88,4 +85,15 @@ func addSlashIfNeeded(url string) string {
 	}
 
 	return buffer.String()
+}
+
+func addProtocolIfNeeded(url string) string {
+	urlWithProtocol := bytes.Buffer{}
+	if !strings.HasPrefix(url, "http") {
+		urlWithProtocol.WriteString("http://")
+	}
+
+	urlWithProtocol.WriteString(url)
+
+	return urlWithProtocol.String()
 }
