@@ -1,8 +1,12 @@
+sudo: required
 language: go
+
+services:
+  - docker
 
 go:
  - 1.7.x
  - master
-
-script: 
-  - go build
+ 
+before_install:
+ - make start-seaweed
