@@ -12,4 +12,4 @@ before_install:
  - make start-seaweed-deamon
  
 script:
-  - go test --master http://localhost:9333 --filer http://localhost:8888
+  - go test --master "http://localhost:9333" --filer "http://localhost:8888"
