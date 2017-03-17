@@ -60,6 +60,34 @@ func TestReadDirectory(t *testing.T) {
 	}
 }
 
+func TestDeleteFile(t *testing.T) {
+	filer := NewFiler(*filerURL)
+	content := "Only a test"
+	err := createFile("test", "test/path/delete", content, &filer)
+	err = createFile("test1", "test/path/delete", content, &filer)
+	err = createFile("test2", "test/path/delete", content, &filer)
+
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
+
+	err = filer.DeleteFilesUntil("test/path/delete", "test1")
+
+	if err != nil {
+		t.Errorf("Error: %s", err)
+	}
+
+	directory, err := filer.ReadDirectory("test/path/delete", "")
+
+	if err != nil {
+		t.Errorf("Error: Unable to read directory %s", err)
+	}
+
+	if len(directory.Files) != 1 {
+		t.Errorf("Error: %s", directory)
+	}
+}
+
 func createFile(filename string, filepath string, content string, filer *Filer) error {
 	data := bytes.NewReader([]byte(content))
 	return filer.Create(data, filename, filepath)

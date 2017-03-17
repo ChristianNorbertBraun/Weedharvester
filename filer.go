@@ -108,3 +108,48 @@ func (f *Filer) ReadDirectory(path string, lastFileName string) (*Directory, err
 	}
 	return &directory, err
 }
+
+// Delete deletes the file under the given path
+func (f *Filer) Delete(filename string, path string) error {
+	var url string
+	if len(path) == 0 {
+		url = fmt.Sprintf("%s%s", addSlashIfNeeded(f.url), filename)
+	} else {
+		url = fmt.Sprintf("%s%s%s", addSlashIfNeeded(f.url), addSlashIfNeeded(path), filename)
+	}
+
+	req, err := http.NewRequest("DELETE", url, nil)
+
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != 202 {
+		return fmt.Errorf("Unable to delete file %s", url)
+	}
+
+	return nil
+}
+
+// DeleteFilesUntil deletes all file under the given path until the
+// given filename
+func (f *Filer) DeleteFilesUntil(path string, lastFileName string) error {
+	directory, err := f.ReadDirectory(path, "")
+
+	for _, file := range directory.Files {
+		if err := f.Delete(file.Name, path); err != nil {
+			return err
+		}
+		if file.Name == lastFileName {
+			break
+		}
+	}
+
+	return err
+}
